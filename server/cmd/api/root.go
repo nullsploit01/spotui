@@ -12,5 +12,5 @@ func Run(logger *slog.Logger) error {
 	}
 
 	app.logger.Info("starting server")
-	return nil
+	return app.serveHTTP()
 }
