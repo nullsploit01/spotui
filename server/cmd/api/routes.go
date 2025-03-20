@@ -12,6 +12,9 @@ import (
 func (app *application) routes() http.Handler {
 	r := chi.NewRouter()
 
+	r.Use(app.logAccess)
+	r.Use(app.recoverPanic)
+
 	r.Use(middleware.RedirectSlashes)
 	r.Use(middleware.Heartbeat("/v1/ping"))
 	r.Use(middleware.RequestID)

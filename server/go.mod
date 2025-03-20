@@ -7,6 +7,7 @@ require (
 	github.com/go-chi/cors v1.2.1
 	github.com/go-playground/validator/v10 v10.25.0
 	github.com/joho/godotenv v1.5.1
+	github.com/tomasen/realip v0.0.0-20180522021738-f0c99a92ddce
 	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394
 )
 
