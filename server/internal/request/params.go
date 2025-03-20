@@ -8,8 +8,8 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func GetUrlParamInt(r *http.Request, key string) (int, error) {
-	value, err := GetUrlParamString(r, key)
+func GetURLParamInt(r *http.Request, key string) (int, error) {
+	value, err := GetURLParamString(r, key)
 	if err != nil {
 		return 0, err
 	}
@@ -22,7 +22,7 @@ func GetUrlParamInt(r *http.Request, key string) (int, error) {
 	return intValue, nil
 }
 
-func GetUrlParamString(r *http.Request, key string) (string, error) {
+func GetURLParamString(r *http.Request, key string) (string, error) {
 	value := chi.URLParam(r, key)
 
 	if value == "" {
@@ -32,8 +32,8 @@ func GetUrlParamString(r *http.Request, key string) (string, error) {
 	return value, nil
 }
 
-func GetUrlParamBool(r *http.Request, key string) (bool, error) {
-	value, err := GetUrlParamString(r, key)
+func GetURLParamBool(r *http.Request, key string) (bool, error) {
+	value, err := GetURLParamString(r, key)
 	if err != nil {
 		return false, err
 	}
