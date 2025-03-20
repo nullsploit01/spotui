@@ -33,9 +33,8 @@ func (app *application) routes() http.Handler {
 	}))
 
 	r.Route("/v1", func(r chi.Router) {
-		r.Get("/sup", func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("sup"))
-		})
+		r.Get("/sup", app.sup)
+		r.Get("/status", app.status)
 	})
 
 	return r
