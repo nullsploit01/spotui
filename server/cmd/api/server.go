@@ -21,7 +21,7 @@ const (
 
 func (app *application) serveHTTP() error {
 	srv := &http.Server{
-		Addr:         fmt.Sprintf(":%d", 8051),
+		Addr:         fmt.Sprintf(":%d", app.config.httpPort),
 		Handler:      app.routes(),
 		ErrorLog:     slog.NewLogLogger(app.logger.Handler(), slog.LevelWarn),
 		IdleTimeout:  defaultIdleTimeout,
