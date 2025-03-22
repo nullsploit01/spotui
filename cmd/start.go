@@ -2,9 +2,6 @@ package cmd
 
 import (
 	"context"
-	"crypto/rand"
-	"crypto/sha256"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -12,22 +9,31 @@ import (
 	"net/url"
 	"os/exec"
 	"time"
+
+	"github.com/nullsploit01/spotui/cmd/utils"
+	"github.com/spf13/viper"
 )
 
-const (
-	clientID    = "a33f9600ad424318ab1871106cc31761"
-	redirectURI = "http://localhost:5555/callback"
+var (
 	scopes      = "user-read-private user-read-email"
-	state       = "randomstate"
+	clientID    = viper.GetString("spotify.client_id")
+	redirectURI = viper.GetString("spotify.redirect_uri")
+	port        = viper.GetInt("spotify.port")
 )
 
-func Start() {
-	verifier, err := generateCodeVerifier()
+func start() error {
+	loadConfig()
+	verifier, err := utils.GenerateCodeVerifier()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	challenge := generateCodeChallenge(verifier)
+	challenge := utils.GenerateCodeChallenge(verifier)
+	state, err := utils.GenerateRandomString(10)
+	if err != nil {
+		return err
+	}
+
 	authURL := getAuthURL(clientID, redirectURI, challenge, state)
 
 	fmt.Println("Opening browser for authentication...")
@@ -45,20 +51,7 @@ func Start() {
 
 	fmt.Println("Access Token Response:")
 	prettyPrintJSON(token)
-}
-
-func generateCodeVerifier() (string, error) {
-	b := make([]byte, 32)
-	_, err := rand.Read(b)
-	if err != nil {
-		return "", err
-	}
-	return base64.RawURLEncoding.EncodeToString(b), nil
-}
-
-func generateCodeChallenge(verifier string) string {
-	h := sha256.Sum256([]byte(verifier))
-	return base64.RawURLEncoding.EncodeToString(h[:])
+	return nil
 }
 
 func getAuthURL(clientID, redirectURI, challenge, state string) string {

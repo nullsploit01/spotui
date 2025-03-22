@@ -1,0 +1,4 @@
+spotify:
+  client_id: "a33f9600ad424318ab1871106cc31761"
+  redirect_uri: "http://localhost:5555/callback"
+  port: 5555

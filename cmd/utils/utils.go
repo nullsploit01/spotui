@@ -19,3 +19,18 @@ func GenerateCodeChallenge(verifier string) string {
 	h := sha256.Sum256([]byte(verifier))
 	return base64.RawURLEncoding.EncodeToString(h[:])
 }
+
+func GenerateRandomString(length int) (string, error) {
+	const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+	bytes := make([]byte, length)
+	_, err := rand.Read(bytes)
+	if err != nil {
+		return "", err
+	}
+
+	result := make([]byte, length)
+	for i, b := range bytes {
+		result[i] = possible[int(b)%len(possible)]
+	}
+	return string(result), nil
+}
