@@ -4,28 +4,35 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"os/exec"
 	"time"
 
 	"github.com/nullsploit01/spotui/cmd/utils"
-	"github.com/spf13/viper"
 )
 
 var (
-	scopes      = "user-read-private user-read-email"
-	clientID    = viper.GetString("spotify.client_id")
-	redirectURI = viper.GetString("spotify.redirect_uri")
-	port        = viper.GetInt("spotify.port")
+	scopes = "user-read-private user-read-email"
 )
 
+type App struct {
+	config *Config
+}
+
 func start() error {
-	loadConfig()
+	config, err := loadConfig()
+	if err != nil {
+		return err
+	}
+
+	app := &App{
+		config: config,
+	}
+
 	verifier, err := utils.GenerateCodeVerifier()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	challenge := utils.GenerateCodeChallenge(verifier)
@@ -34,19 +41,19 @@ func start() error {
 		return err
 	}
 
-	authURL := getAuthURL(clientID, redirectURI, challenge, state)
+	authURL := getAuthURL(app.config.ClientID, app.config.RedirectURI, challenge, state)
 
 	fmt.Println("Opening browser for authentication...")
 	exec.Command("open", authURL).Start() // For Linux; use "open" on macOS or "start" on Windows
 
 	code, err := startRedirectServer()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
-	token, err := exchangeCodeForToken(code, verifier, clientID, redirectURI)
+	token, err := exchangeCodeForToken(code, verifier, app.config.ClientID, app.config.RedirectURI)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	fmt.Println("Access Token Response:")
@@ -88,7 +95,7 @@ func startRedirectServer() (string, error) {
 	return code, nil
 }
 
-func exchangeCodeForToken(code, verifier, clientID, redirectURI string) (map[string]interface{}, error) {
+func exchangeCodeForToken(code, verifier, clientID, redirectURI string) (map[string]any, error) {
 	data := url.Values{}
 	data.Set("client_id", clientID)
 	data.Set("grant_type", "authorization_code")
@@ -102,12 +109,12 @@ func exchangeCodeForToken(code, verifier, clientID, redirectURI string) (map[str
 	}
 	defer resp.Body.Close()
 
-	var result map[string]interface{}
+	var result map[string]any
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	return result, err
 }
 
-func prettyPrintJSON(data interface{}) {
+func prettyPrintJSON(data any) {
 	out, _ := json.MarshalIndent(data, "", "  ")
 	fmt.Println(string(out))
 }

@@ -1,18 +1,29 @@
 package cmd
 
 import (
-	"log"
-
 	"github.com/spf13/viper"
 )
 
-func loadConfig() {
+type Config struct {
+	ClientID    string `mapstructure:"client_id"`
+	RedirectURI string `mapstructure:"redirect_uri"`
+	Port        int    `mapstructure:"port"`
+}
+
+func loadConfig() (*Config, error) {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		log.Fatalf("Error reading config file: %v", err)
+		return nil, err
 	}
+
+	var config *Config
+	err = viper.Unmarshal(&config)
+	if err != nil {
+		return nil, err
+	}
+	return config, nil
 }
