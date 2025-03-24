@@ -6,6 +6,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"os/exec"
+	"runtime"
 )
 
 func GenerateCodeVerifier() (string, error) {
@@ -40,4 +42,20 @@ func GenerateRandomString(length int) (string, error) {
 func PrintPrettyPrintJSON(data any) {
 	out, _ := json.MarshalIndent(data, "", "  ")
 	fmt.Println(string(out))
+}
+
+func OpenBrowser(url string) error {
+	var cmd *exec.Cmd
+
+	switch runtime.GOOS {
+	case "darwin":
+		cmd = exec.Command("open", url)
+	case "windows":
+		cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
+	default:
+		cmd = exec.Command("xdg-open", url)
+	}
+
+	fmt.Println("If the browser does not open automatically, please open it manually at:", url)
+	return cmd.Start()
 }

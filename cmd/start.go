@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os/exec"
 
 	"github.com/nullsploit01/spotui/cmd/auth"
 	"github.com/nullsploit01/spotui/cmd/utils"
@@ -36,7 +35,7 @@ func start() error {
 	authURL := auth.GetAuthURL(app.config.ClientID, app.config.RedirectURI, challenge, state)
 
 	fmt.Println("Opening browser for authentication...")
-	exec.Command("open", authURL).Start() // For Linux; use "open" on macOS or "start" on Windows
+	utils.OpenBrowser(authURL)
 
 	code, err := auth.StartRedirectServer()
 	if err != nil {
