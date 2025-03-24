@@ -4,6 +4,8 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/json"
+	"fmt"
 )
 
 func GenerateCodeVerifier() (string, error) {
@@ -33,4 +35,9 @@ func GenerateRandomString(length int) (string, error) {
 		result[i] = possible[int(b)%len(possible)]
 	}
 	return string(result), nil
+}
+
+func PrintPrettyPrintJSON(data any) {
+	out, _ := json.MarshalIndent(data, "", "  ")
+	fmt.Println(string(out))
 }
