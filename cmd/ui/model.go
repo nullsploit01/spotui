@@ -29,7 +29,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	return "🔍 Search Spotify: " + m.input + "\n(press Enter to search, q to quit)"
+	return SearchInput.Render("🔍 " + m.input)
 }
 
 func StartUI() error {
