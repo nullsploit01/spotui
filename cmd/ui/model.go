@@ -32,7 +32,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		default:
-			m.input += msg.String()
+			// Limit input to 50 characters
+			if len(m.input) < 50 {
+				m.input += msg.String()
+			}
 		}
 	}
 	return m, nil
