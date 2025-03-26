@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/nullsploit01/spotui/cmd/auth"
+	"github.com/nullsploit01/spotui/cmd/ui"
 	"github.com/nullsploit01/spotui/cmd/utils"
 )
 
@@ -49,5 +50,5 @@ func start() error {
 
 	fmt.Println("Access Token Response:")
 	utils.PrintPrettyPrintJSON(token)
-	return nil
+	return ui.StartUI()
 }
