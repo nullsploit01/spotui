@@ -43,6 +43,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() string {
 	content := "🔍 " + m.input
+	if m.input == "" {
+		content = "🔍 " + "What do you want to play?"
+	}
 
 	rendered := inputStyle.Render(content)
 	centered := lipgloss.PlaceHorizontal(m.width, lipgloss.Center, rendered)
