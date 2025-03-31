@@ -6,8 +6,6 @@ import (
 )
 
 type App struct {
-	config      *Config
-	accessToken string
 }
 
 func start() error {
@@ -21,10 +19,5 @@ func start() error {
 		return err
 	}
 
-	app := &App{
-		config:      config,
-		accessToken: token,
-	}
-
-	return ui.StartUI()
+	return ui.StartUI(token)
 }

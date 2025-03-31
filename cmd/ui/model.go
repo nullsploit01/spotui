@@ -6,8 +6,9 @@ import (
 )
 
 type model struct {
-	input string
-	width int
+	input       string
+	width       int
+	accessToken string
 }
 
 func (m model) Init() tea.Cmd {
@@ -53,8 +54,8 @@ func (m model) View() string {
 	return "\n" + centered
 }
 
-func StartUI() error {
-	m := model{}
+func StartUI(accessToken string) error {
+	m := model{accessToken: accessToken}
 	p := tea.NewProgram(m, tea.WithAltScreen())
 	_, err := p.Run()
 	return err
