@@ -3,11 +3,11 @@ package cmd
 import (
 	"github.com/nullsploit01/spotui/cmd/auth"
 	"github.com/nullsploit01/spotui/cmd/ui"
-	store "github.com/nullsploit01/spotui/cmd/utils/store"
 )
 
 type App struct {
-	config *Config
+	config      *Config
+	accessToken string
 }
 
 func start() error {
@@ -16,16 +16,14 @@ func start() error {
 		return err
 	}
 
-	token, err := store.Get("refresh_token")
+	token, err := auth.GetAccessToken(config.ClientID, config.RedirectURI)
 	if err != nil {
 		return err
 	}
 
-	if token == "" {
-		err = auth.StartAuthServer(config.ClientID, config.RedirectURI)
-		if err != nil {
-			return err
-		}
+	app := &App{
+		config:      config,
+		accessToken: token,
 	}
 
 	return ui.StartUI()

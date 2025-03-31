@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/nullsploit01/spotui/cmd/models"
 )
 
 var (
@@ -47,7 +49,7 @@ func StartRedirectServer() (string, error) {
 	return code, nil
 }
 
-func ExchangeCodeForToken(code, verifier, clientID, redirectURI string) (map[string]any, error) {
+func ExchangeCodeForToken(code, verifier, clientID, redirectURI string) (models.AuthResponse, error) {
 	data := url.Values{}
 	data.Set("client_id", clientID)
 	data.Set("grant_type", "authorization_code")
@@ -57,11 +59,11 @@ func ExchangeCodeForToken(code, verifier, clientID, redirectURI string) (map[str
 
 	resp, err := http.PostForm("https://accounts.spotify.com/api/token", data)
 	if err != nil {
-		return nil, err
+		return models.AuthResponse{}, err
 	}
 	defer resp.Body.Close()
 
-	var result map[string]any
+	var result models.AuthResponse
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	return result, err
 }

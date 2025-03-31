@@ -3,19 +3,20 @@ package auth
 import (
 	"fmt"
 
+	"github.com/nullsploit01/spotui/cmd/models"
 	"github.com/nullsploit01/spotui/cmd/utils"
 )
 
-func StartAuthServer(clientID, redirectURI string) error {
+func StartAuthServer(clientID, redirectURI string) (models.AuthResponse, error) {
 	verifier, err := utils.GenerateCodeVerifier()
 	if err != nil {
-		return err
+		return models.AuthResponse{}, err
 	}
 
 	challenge := utils.GenerateCodeChallenge(verifier)
 	state, err := utils.GenerateRandomString(10)
 	if err != nil {
-		return err
+		return models.AuthResponse{}, err
 	}
 
 	authURL := GetAuthURL(clientID, redirectURI, challenge, state)
@@ -25,15 +26,13 @@ func StartAuthServer(clientID, redirectURI string) error {
 
 	code, err := StartRedirectServer()
 	if err != nil {
-		return err
+		return models.AuthResponse{}, err
 	}
 
 	token, err := ExchangeCodeForToken(code, verifier, clientID, redirectURI)
 	if err != nil {
-		return err
+		return models.AuthResponse{}, err
 	}
 
-	fmt.Println("Access Token Response:")
-	utils.PrintPrettyPrintJSON(token)
-	return nil
+	return token, err
 }
